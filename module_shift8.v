@@ -4,18 +4,25 @@ module top_module (
     input [1:0] sel, 
     output [7:0] q 
 );
+    wire t1,u1,v1,w1;
+    wire [7:0]t,u,v,w,t2,u2,v2,w2 ;
+
+    assign t = d;
+    my_dff8 a1(.clk(clk),.d(d),.q(u));
+    my_dff8 a2(.clk(clk),.d(u),.q(v));
+    my_dff8 a3(.clk(clk),.d(v),.q(w));
     
-    wire [7:0]t,u[3:0];
-    assign t[0] = d;
-    my_dff8 a1(.clk(clk),.d(d),   .q(t[1]));
-    my_dff8 a2(.clk(clk),.d(t[1]),.q(t[2]));
-    my_dff8 a3(.clk(clk),.d(t[2]),.q(t[3]));
+    assign t1= ~|(sel ^ 2'b00) ;
+    assign u1= ~|(sel ^ 2'b01) ;
+    assign v1= ~|(sel ^ 2'b10) ;
+    assign w1= ~|(sel ^ 2'b11) ;
     
-    always @(*) begin
-        for ( int i=0; i<4; i++)
-            if (sel == i)
-                assign q = t[i];
-    end
+    assign t2= t & {8{t1}};
+    assign u2= u & {8{u1}};
+    assign v2= v & {8{v1}};
+    assign w2= w & {8{w1}};
     
+    assign q = t2|u2|v2|w2;
+
 
 endmodule
